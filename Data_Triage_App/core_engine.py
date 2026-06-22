@@ -145,42 +145,86 @@ class DataTriageEngine:
 
     @staticmethod
     def run_machine_learning_pipeline(df: pd.DataFrame, target_col: str, feature_cols: list) -> dict:
+        """
+        Upgraded type-safe pipeline: Handles strict pandas StringDtype arrays 
+        and converts them to standard formats safely before encoding vectors.
+        """
         working_df = df[feature_cols + [target_col]].copy().dropna(subset=[target_col])
+        
+        # --- Type-Safe Preprocessing Fix ---
         for col in feature_cols:
+            # Force modern strict pandas StringDtype back to a standard object structure
+            if isinstance(working_df[col].dtype, pd.StringDtype):
+                working_df[col] = working_df[col].astype(object)
+                
             if working_df[col].isnull().sum() > 0:
                 if np.issubdtype(working_df[col].dtype, np.number):
                     working_df[col] = working_df[col].fillna(working_df[col].median())
                 else:
                     working_df[col] = working_df[col].fillna("Unknown")
+
         X = working_df[feature_cols].copy()
+        encoders = {}
+        
         for col in X.columns:
+            # Recheck type mappings to execute standard encoding loops
+            if isinstance(X[col].dtype, pd.StringDtype):
+                X[col] = X[col].astype(object)
+                
             if not np.issubdtype(X[col].dtype, np.number):
-                X[col] = LabelEncoder().fit_transform(X[col].astype(str))
+                le = LabelEncoder()
+                X[col] = le.fit_transform(X[col].astype(str))
+                encoders[col] = le
+        # -------------------------------------
+                
         y = working_df[target_col]
+        # Handle target data types cleanly if it's also a strict StringDtype
+        if isinstance(y.dtype, pd.StringDtype):
+            y = y.astype(object)
+            
         is_classification = not np.issubdtype(y.dtype, np.number) or y.nunique() <= 10
+        
         if is_classification:
             task_type = "Classification"
             le_target = LabelEncoder()
             y_encoded = le_target.fit_transform(y.astype(str))
+            encoders["_target"] = le_target
             X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=42)
+            
             model = RandomForestClassifier(n_estimators=100, random_state=42).fit(X_train, y_train)
             predictions = model.predict(X_test)
             score_metric = "Accuracy Score"
             score_value = round(accuracy_score(y_test, predictions) * 100, 2)
             error_value = None
-            y_test_orig, pred_orig = le_target.inverse_transform(y_test), le_target.inverse_transform(predictions)
+            y_test_orig = le_target.inverse_transform(y_test)
+            pred_orig = le_target.inverse_transform(predictions)
         else:
             task_type = "Regression"
             X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+            
             model = RandomForestRegressor(n_estimators=100, random_state=42).fit(X_train, y_train)
             predictions = model.predict(X_test)
             score_metric = "R² Variance Score"
             score_value = round(r2_score(y_test, predictions), 4)
             error_value = round(mean_absolute_error(y_test, predictions), 2)
-            y_test_orig, pred_orig = y_test, predictions
+            y_test_orig = y_test
+            pred_orig = predictions
+
         preview_df = pd.DataFrame({"Actual Value": y_test_orig, "Model Prediction": pred_orig}).reset_index(drop=True)
         feat_imp_df = pd.DataFrame({"Feature Vector": feature_cols, "Significance Weight": model.feature_importances_}).sort_values(by="Significance Weight", ascending=False)
-        return {"task_type": task_type, "score_metric": score_metric, "score_value": score_value, "error_value": error_value, "feature_importance": feat_imp_df, "preview_df": preview_df}
+        
+        return {
+            "task_type": task_type,
+            "score_metric": score_metric,
+            "score_value": score_value,
+            "error_value": error_value,
+            "feature_importance": feat_imp_df,
+            "preview_df": preview_df,
+            "model_object": model,
+            "encoders": encoders,
+            "feature_cols": feature_cols,
+            "target_col": target_col
+        }
 
     @staticmethod
     def evaluate_available_features(df: pd.DataFrame) -> dict:

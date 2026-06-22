@@ -27,6 +27,16 @@ class UIComponents:
         st.dataframe(forecast_data, use_container_width=True)
 
     @staticmethod
+    def render_ml_performance_chart(preview_df):
+        """
+        New: Renders an 'Actual vs. Predicted' performance comparison chart
+        to show the before/after tracking precision.
+        """
+        st.write("#### 📉 Performance Tracking: Actual vs. Model Prediction")
+        st.caption("This visualization maps the true target values directly against the model's computed guesses to show prediction accuracy.")
+        st.line_chart(preview_df, y=["Actual Value", "Model Prediction"])
+
+    @staticmethod
     def render_what_if_canvas(current_df, res):
         st.markdown("---")
         st.write("### 🔮 Live 'What-If' Simulation Canvas")

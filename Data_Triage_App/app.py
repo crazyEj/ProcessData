@@ -172,34 +172,49 @@ if st.session_state.working_df is not None:
         if st.button("Run Consolidation"):
             st.session_state.working_df = DataTriageEngine.aggregate_and_collapse(current_df, merge_target, value_target, math_strategy)
             st.success("Dataset successfully flattened!"), st.rerun()
-
     elif "🧠" in feature_choice:
         st.write("### Automated Machine Learning Studio Pipeline & What-If Canvas")
         all_cols = current_df.columns.tolist()
         col_m1, col_m2 = st.columns(2)
-        with col_m1: target_var = st.selectbox("Select Target Label", all_cols, index=len(all_cols)-1)
-        with col_m2: selected_features = st.multiselect("Select Feature Dimensions", all_cols, default=[c for c in all_cols if c != target_var])
+        with col_m1: 
+            target_var = st.selectbox("Select Target Label", all_cols, index=len(all_cols)-1)
+        with col_m2: 
+            selected_features = st.multiselect("Select Feature Dimensions", all_cols, default=[c for c in all_cols if c != target_var])
 
         if len(selected_features) > 0 and st.button("Train Automated Machine Learning Model", use_container_width=True):
             try:
                 with st.spinner("Processing forest pipelines..."):
                     st.session_state.trained_ml_data = DataTriageEngine.run_machine_learning_pipeline(current_df, target_var, selected_features)
                     log_action(f"ML Studio Model Trained on '{target_var}'.")
-            except Exception as e: st.error(f"Training Interrupted: {e}")
+            except Exception as e: 
+                st.error(f"Training Interrupted: {e}")
 
         if st.session_state.trained_ml_data is not None:
             res = st.session_state.trained_ml_data
             st.markdown("---")
             st.write(f"### 🎉 Pipeline Execution Results: {res['task_type']} Engine")
             c1, c2 = st.columns(2)
-            with c1: st.metric(label=res["score_metric"], value=f"{res['score_value']}")
-            with c2: st.metric(label="Evaluation Strategy", value="Cross-Validation Splitting") if res["error_value"] is None else st.metric(label="Mean Absolute Error (MAE)", value=f"{res['error_value']}")
+            with c1: 
+                st.metric(label=res["score_metric"], value=f"{res['score_value']}")
+            with c2: 
+                if res["error_value"] is None:
+                    st.metric(label="Evaluation Strategy", value="Cross-Validation Splitting")
+                else:
+                    st.metric(label="Mean Absolute Error (MAE)", value=f"{res['error_value']}")
+            
+            # Render our performance analytics tracking line graph
+            UIComponents.render_ml_performance_chart(res["preview_df"])
             
             ch1, ch2 = st.columns([1, 1])
-            with ch1: st.bar_chart(data=res["feature_importance"], x="Feature Vector", y="Significance Weight")
-            with ch2: st.dataframe(res["preview_df"].head(5), use_container_width=True)
+            with ch1: 
+                st.write("#### 📊 Feature Importance Ranking")
+                st.bar_chart(data=res["feature_importance"], x="Feature Vector", y="Significance Weight")
+            with ch2: 
+                st.write("#### 🎯 Prediction Sample Preview")
+                st.dataframe(res["preview_df"].head(5), use_container_width=True)
                 
-            # Render our newly decoupled modular simulation dashboard element
+            # Render our modular simulation dashboard element
             UIComponents.render_what_if_canvas(current_df, res)
 else:
     st.info("System standing by. Please upload a broken or unfixed file in the sidebar controller to begin.")
+  
