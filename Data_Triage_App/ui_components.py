@@ -9,14 +9,28 @@ class UIComponents:
     """
     
     @staticmethod
-    def render_forecast_dashboard(forecast_data, col_val):
+    def render_forecast_dashboard(forecast_data, col_val, insights=None):
         st.markdown("---")
+        
+        # --- NEW: AUTOMATED EXPLANATORY INSIGHTS CARD ---
+        if insights:
+            change_sign = "+" if insights["pct_change"] >= 0 else ""
+            st.info(
+                f"💡 **AI Analyst Market Alert:**\n\n"
+                f"The ARIMA engine predicts that **{insights['target_name']}** will "
+                f"**{insights['direction']} by {change_sign}{insights['pct_change']}%** over the next {insights['horizon_steps']} intervals. "
+                f"The worst-case floor threshold is calculated at **₱ {insights['worst_case_floor']:,.2f}**, "
+                f"while the optimal ceiling capacity boundary scales up to **₱ {insights['best_case_ceiling']:,.2f}**."
+            )
+        # ------------------------------------------------
+        
         st.write(f"#### 📊 High-Tier Valuation Forecasting Chart: {col_val}")
         st.line_chart(
             data=forecast_data, 
             x="Timeline Axis", 
             y=["Historical Value", "Predicted Value", "Lower Bound Price", "Upper Bound Price"]
         )
+        
         c_card1, c_card2, c_card3 = st.columns(3)
         with c_card1: 
             st.metric(label="Likely Future Target Valuation", value=f"₱ {forecast_data['Predicted Value'].dropna().iloc[-1]:,.2f}")

@@ -139,6 +139,7 @@ if st.session_state.working_df is not None:
         st.dataframe(filtered_df, use_container_width=True)
 
     elif "📈" in feature_choice:
+        st.write("### Advanced ARIMA Analytics & Price Uncertainty Forecasts")
         all_cols = current_df.columns.tolist()
         num_cols = current_df.select_dtypes(include=[np.number]).columns.tolist()
         col_f1, col_f2, col_f3 = st.columns(3)
@@ -149,10 +150,14 @@ if st.session_state.working_df is not None:
         
         if st.button("Generate Analytical Forecasting Analytics", use_container_width=True):
             try:
-                forecast_data = DataTriageEngine.generate_forecast(current_df, col_date, col_val, periods=horizon, freq=time_freq[1])
+                # Upgraded to unpack the returned dataframe AND the insights dictionary
+                forecast_data, forecast_insights = DataTriageEngine.generate_forecast(current_df, col_date, col_val, periods=horizon, freq=time_freq[1])
                 log_action(f"ARIMA Forecast Run on '{col_val}' for {horizon} intervals.")
-                UIComponents.render_forecast_dashboard(forecast_data, col_val)
-            except Exception as e: st.error(f"Time-Series Pipeline Failure: {e}")
+                
+                # Pass both variables into your updated UI layout component
+                UIComponents.render_forecast_dashboard(forecast_data, col_val, forecast_insights)
+            except Exception as e: 
+                st.error(f"Time-Series Pipeline Failure: {e}")
 
     elif "🗂️" in feature_choice:
         all_cols = current_df.columns.tolist()

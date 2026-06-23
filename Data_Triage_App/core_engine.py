@@ -93,45 +93,56 @@ class DataTriageEngine:
         return df[df.apply(row_search, axis=1)]
 
     @staticmethod
-    def generate_forecast(df: pd.DataFrame, date_col: str, value_col: str, periods: int = 7, freq: str = 'D') -> pd.DataFrame:
-        """
-        Processes timeline data and forecasts future analytics (e.g., land or house prices) 
-        using granular time frequency aggregation steps.
-        """
-        from statsmodels.tsa.api import ExponentialSmoothing
-        
+    def generate_forecast(df: pd.DataFrame, date_col: str, value_col: str, periods: int = 6, freq: str = 'M') -> tuple:
+        from statsmodels.tsa.arima.model import ARIMA
         df_forecast = df.copy()
         df_forecast[date_col] = pd.to_datetime(df_forecast[date_col], errors='coerce')
         df_forecast[value_col] = pd.to_numeric(df_forecast[value_col], errors='coerce')
         df_forecast = df_forecast.dropna(subset=[date_col, value_col]).sort_values(by=date_col)
-        
         df_forecast.set_index(date_col, inplace=True)
-        
-        # Resample using historical averages to track steady price value movements
         ts_data = df_forecast[value_col].resample(freq).mean().ffill()
         
-        # Simple fallback check if data history is too brief
-        if len(ts_data) < 3:
-            model = ExponentialSmoothing(ts_data, trend='add', seasonal=None, initialization_method="heuristic").fit()
-        else:
-            model = ExponentialSmoothing(ts_data, trend='add', seasonal=None).fit()
-            
-        forecast_values = model.forecast(steps=periods)
+        # Fit ARIMA Model
+        model = ARIMA(ts_data, order=(1, 1, 1))
+        model_fitted = model.fit()
+        forecast_res = model_fitted.get_forecast(steps=periods)
+        
+        forecast_values = forecast_res.predicted_mean
+        confidence_intervals = forecast_res.conf_int(alpha=0.05)
         future_dates = pd.date_range(start=ts_data.index[-1], periods=periods + 1, freq=freq)[1:]
         
-        # Build Historical Reference Frame vs Future Prediction DataFrame
-        historical_df = ts_data.reset_index()
-        historical_df.columns = ["Timeline Axis", "Historical Value"]
-        historical_df["Predicted Value"] = np.nan
-        
+        historical_df = pd.DataFrame({
+            "Timeline Axis": ts_data.index,
+            "Historical Value": ts_data.values,
+            "Predicted Value": np.nan,
+            "Lower Bound Price": np.nan,
+            "Upper Bound Price": np.nan
+        })
         forecast_df = pd.DataFrame({
             "Timeline Axis": future_dates,
             "Historical Value": np.nan,
-            "Predicted Value": forecast_values
+            "Predicted Value": forecast_values.values,
+            "Lower Bound Price": confidence_intervals.iloc[:, 0].values,
+            "Upper Bound Price": confidence_intervals.iloc[:, 1].values
         })
         
-        combined_df = pd.concat([historical_df, forecast_df], ignore_index=True)
-        return combined_df
+        # --- NEW: ANALYST INSIGHT GENERATION LOGIC ---
+        last_historical = ts_data.values[-1] if len(ts_data.values) > 0 else 1
+        final_forecast = forecast_values.values[-1]
+        pct_change = ((final_forecast - last_historical) / last_historical) * 100
+        
+        insights = {
+            "pct_change": round(pct_change, 1),
+            "direction": "climb 📈" if pct_change >= 0 else "drop 📉",
+            "final_predicted": final_forecast,
+            "worst_case_floor": confidence_intervals.iloc[:, 0].values[-1],
+            "best_case_ceiling": confidence_intervals.iloc[:, 1].values[-1],
+            "target_name": value_col,
+            "horizon_steps": periods
+        }
+        # ----------------------------------------------
+        
+        return pd.concat([historical_df, forecast_df], ignore_index=True), insights
 
     @staticmethod
     def build_pivot_table(df: pd.DataFrame, index_col: str, values_col: str, agg_func: str) -> pd.DataFrame:
