@@ -40,6 +40,30 @@ class DataTriageEngine:
                 "Type Mismatch": type_mismatch
             })
         return pd.DataFrame(metrics)
+    @staticmethod
+    def calculate_health_score(df: pd.DataFrame) -> int:
+        """
+        Computes a comprehensive percentage health score for the uploaded dataset.
+        Deducts points dynamically based on null density and row duplication.
+        """
+        if df.empty:
+            return 0
+            
+        total_cells = df.size
+        total_nulls = df.isnull().sum().sum()
+        
+        # Calculate missing data penalty (0% nulls = 100% score component)
+        null_ratio = total_nulls / total_cells if total_cells > 0 else 0
+        null_score = (1 - null_ratio) * 100
+        
+        # Calculate duplication penalty (0 duplicated rows = 100% score component)
+        duplicate_rows = df.duplicated().sum()
+        dup_ratio = duplicate_rows / len(df) if len(df) > 0 else 0
+        dup_score = (1 - dup_ratio) * 100
+        
+        # Weighted combination: 70% weight on data fullness, 30% on uniqueness
+        final_score = int((null_score * 0.7) + (dup_score * 0.3))
+        return max(0, min(100, final_score))
 
     @staticmethod
     def auto_impute(df: pd.DataFrame) -> pd.DataFrame:
