@@ -39,7 +39,7 @@ st.sidebar.header("📁 Control Center")
 # Sidebar upload section with enhanced styling
 sidebar_upload_html = """
 <div class="custom-card" style="margin-bottom: 16px;">
-    <p style="margin: 0 0 8px 0; color: #cbd5e1; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">📤 Import Dataset</p>
+    <p style="margin: 0 0 8px 0; color: #5C4A42; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">📤 Import Dataset</p>
 </div>
 """
 st.sidebar.markdown(sidebar_upload_html, unsafe_allow_html=True)
@@ -72,7 +72,7 @@ all_features = [
 ]
 
 if st.session_state.show_features:
-    st.sidebar.markdown("### 🎯 Available Workspaces")
+    st.sidebar.markdown("### 🎯 Available Workspaces", unsafe_allow_html=True)
     if st.session_state.working_df is not None:
         status = st.session_state.feature_status
         for f in all_features:
@@ -96,8 +96,8 @@ if st.session_state.working_df is not None:
     # Data stats in sidebar
     stats_html = f"""
     <div class="custom-card">
-        <p style="margin: 0 0 8px 0; color: #cbd5e1; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">📊 Dataset Stats</p>
-        <div style="color: #f1f5f9; font-size: 13px; line-height: 1.8;">
+        <p style="margin: 0 0 8px 0; color: #5C4A42; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">📊 Dataset Stats</p>
+        <div style="color: #3C2A23; font-size: 13px; line-height: 1.8;">
             <div>📈 Rows: <strong>{len(st.session_state.working_df)}</strong></div>
             <div>📋 Columns: <strong>{len(st.session_state.working_df.columns)}</strong></div>
             <div>🚨 Missing: <strong>{st.session_state.working_df.isnull().sum().sum()}</strong></div>
@@ -127,7 +127,7 @@ if st.session_state.working_df is not None:
         <div class="custom-card" style="margin-bottom: 12px;">
             <div style="display: flex; align-items: center; gap: 10px;">
                 <span style="font-size: 24px;">📊</span>
-                <h3 style="margin: 0; color: #f1f5f9;">Data Canvas Preview</h3>
+                <h3 style="margin: 0; color: #3C2A23;">Data Canvas Preview</h3>
             </div>
         </div>
         """
@@ -138,7 +138,7 @@ if st.session_state.working_df is not None:
         <div class="custom-card" style="margin-bottom: 12px;">
             <div style="display: flex; align-items: center; gap: 10px;">
                 <span style="font-size: 24px;">📜</span>
-                <h3 style="margin: 0; color: #f1f5f9;">Workflow History</h3>
+                <h3 style="margin: 0; color: #3C2A23;">Workflow History</h3>
             </div>
         </div>
         """
@@ -146,10 +146,10 @@ if st.session_state.working_df is not None:
         if st.session_state.audit_trail:
             history_items = ""
             for item in st.session_state.audit_trail[-3:]:
-                history_items += f"<div style='color: #cbd5e1; font-size: 12px; margin: 6px 0; padding: 6px; background: rgba(99, 102, 241, 0.1); border-radius: 4px;'>• {item}</div>"
+                history_items += f"<div style='color: #5C4A42; font-size: 12px; margin: 6px 0; padding: 6px; background: rgba(184, 149, 106, 0.1); border-radius: 4px;'>• {item}</div>"
             st.markdown(history_items, unsafe_allow_html=True)
         else:
-            st.markdown("<p style='color: #cbd5e1; font-size: 12px;'>No actions yet</p>", unsafe_allow_html=True)
+            st.markdown("<p style='color: #5C4A42; font-size: 12px;'>No actions yet</p>", unsafe_allow_html=True)
             
         if st.button("🔄 Reset Project", use_container_width=True, help="Clear all data and start fresh"):
             st.session_state.working_df, st.session_state.audit_trail, st.session_state.trained_ml_data = None, [], None
@@ -161,13 +161,13 @@ if st.session_state.working_df is not None:
     # Feature title with styling
     feature_title_html = f"""
     <div style="
-        background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.05) 100%);
-        border-left: 4px solid #6366f1;
+        background: linear-gradient(135deg, rgba(184, 149, 106, 0.1) 0%, rgba(159, 127, 92, 0.05) 100%);
+        border-left: 4px solid #B8956A;
         border-radius: 8px;
         padding: 16px;
         margin-bottom: 20px;
     ">
-        <h2 style="margin: 0; color: #f1f5f9;">{feature_choice}</h2>
+        <h2 style="margin: 0; color: #3C2A23;">{feature_choice}</h2>
     </div>
     """
     st.markdown(feature_title_html, unsafe_allow_html=True)
@@ -176,8 +176,8 @@ if st.session_state.working_df is not None:
     if "📊" in feature_choice:
         profile_header = """
         <div class="custom-card" style="margin-bottom: 16px;">
-            <h4 style="margin: 0; color: #f1f5f9;">Dataset Health Profile</h4>
-            <p style="margin: 8px 0 0 0; color: #cbd5e1; font-size: 13px;">Comprehensive analysis of data quality, missing values, and type consistency</p>
+            <h4 style="margin: 0; color: #3C2A23;">Dataset Health Profile</h4>
+            <p style="margin: 8px 0 0 0; color: #5C4A42; font-size: 13px;">Comprehensive analysis of data quality, missing values, and type consistency</p>
         </div>
         """
         st.markdown(profile_header, unsafe_allow_html=True)
@@ -186,8 +186,8 @@ if st.session_state.working_df is not None:
     elif "🧼" in feature_choice:
         impute_header = """
         <div class="custom-card" style="margin-bottom: 16px;">
-            <h4 style="margin: 0; color: #f1f5f9;">Auto-Imputation Engine</h4>
-            <p style="margin: 8px 0 0 0; color: #cbd5e1; font-size: 13px;">Automatically fill missing values using intelligent algorithms</p>
+            <h4 style="margin: 0; color: #3C2A23;">Auto-Imputation Engine</h4>
+            <p style="margin: 8px 0 0 0; color: #5C4A42; font-size: 13px;">Automatically fill missing values using intelligent algorithms</p>
         </div>
         """
         st.markdown(impute_header, unsafe_allow_html=True)
@@ -200,8 +200,8 @@ if st.session_state.working_df is not None:
     elif "📝" in feature_choice:
         text_header = """
         <div class="custom-card" style="margin-bottom: 16px;">
-            <h4 style="margin: 0; color: #f1f5f9;">Text Inconsistency Fix</h4>
-            <p style="margin: 8px 0 0 0; color: #cbd5e1; font-size: 13px;">Standardize text entries using fuzzy matching algorithms</p>
+            <h4 style="margin: 0; color: #3C2A23;">Text Inconsistency Fix</h4>
+            <p style="margin: 8px 0 0 0; color: #5C4A42; font-size: 13px;">Standardize text entries using fuzzy matching algorithms</p>
         </div>
         """
         st.markdown(text_header, unsafe_allow_html=True)
@@ -225,8 +225,8 @@ if st.session_state.working_df is not None:
     elif "🚨" in feature_choice:
         anomaly_header = """
         <div class="custom-card" style="margin-bottom: 16px;">
-            <h4 style="margin: 0; color: #f1f5f9;">ML Anomaly Detection</h4>
-            <p style="margin: 8px 0 0 0; color: #cbd5e1; font-size: 13px;">Isolate outliers and abnormal data points using Isolation Forest</p>
+            <h4 style="margin: 0; color: #3C2A23;">ML Anomaly Detection</h4>
+            <p style="margin: 8px 0 0 0; color: #5C4A42; font-size: 13px;">Isolate outliers and abnormal data points using Isolation Forest</p>
         </div>
         """
         st.markdown(anomaly_header, unsafe_allow_html=True)
@@ -244,16 +244,16 @@ if st.session_state.working_df is not None:
                 stats_html = f"""
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 16px 0;">
                     <div class="metric-card">
-                        <p style="margin: 0; color: #cbd5e1; font-size: 11px; text-transform: uppercase;">Flagged Rows</p>
-                        <p style="margin: 8px 0 0 0; color: #ef4444; font-size: 24px; font-weight: bold;">{total_anomalies}</p>
+                        <p style="margin: 0; color: #5C4A42; font-size: 11px; text-transform: uppercase;">Flagged Rows</p>
+                        <p style="margin: 8px 0 0 0; color: #6D5C50; font-size: 24px; font-weight: bold;">{total_anomalies}</p>
                     </div>
                     <div class="metric-card">
-                        <p style="margin: 0; color: #cbd5e1; font-size: 11px; text-transform: uppercase;">Clean Rows</p>
-                        <p style="margin: 8px 0 0 0; color: #10b981; font-size: 24px; font-weight: bold;">{len(current_df) - total_anomalies}</p>
+                        <p style="margin: 0; color: #5C4A42; font-size: 11px; text-transform: uppercase;">Clean Rows</p>
+                        <p style="margin: 8px 0 0 0; color: #8B7355; font-size: 24px; font-weight: bold;">{len(current_df) - total_anomalies}</p>
                     </div>
                     <div class="metric-card">
-                        <p style="margin: 0; color: #cbd5e1; font-size: 11px; text-transform: uppercase;">Anomaly Rate</p>
-                        <p style="margin: 8px 0 0 0; color: #f59e0b; font-size: 24px; font-weight: bold;">{(total_anomalies/len(current_df)*100):.1f}%</p>
+                        <p style="margin: 0; color: #5C4A42; font-size: 11px; text-transform: uppercase;">Anomaly Rate</p>
+                        <p style="margin: 8px 0 0 0; color: #A68A74; font-size: 24px; font-weight: bold;">{(total_anomalies/len(current_df)*100):.1f}%</p>
                     </div>
                 </div>
                 """
@@ -263,8 +263,8 @@ if st.session_state.working_df is not None:
     elif "🔍" in feature_choice:
         search_header = """
         <div class="custom-card" style="margin-bottom: 16px;">
-            <h4 style="margin: 0; color: #f1f5f9;">Smart Sorting & Deep Search</h4>
-            <p style="margin: 8px 0 0 0; color: #cbd5e1; font-size: 13px;">Search and filter data with regex support and advanced sorting</p>
+            <h4 style="margin: 0; color: #3C2A23;">Smart Sorting & Deep Search</h4>
+            <p style="margin: 8px 0 0 0; color: #5C4A42; font-size: 13px;">Search and filter data with regex support and advanced sorting</p>
         </div>
         """
         st.markdown(search_header, unsafe_allow_html=True)
@@ -285,8 +285,8 @@ if st.session_state.working_df is not None:
     elif "📈" in feature_choice:
         forecast_header = """
         <div class="custom-card" style="margin-bottom: 16px;">
-            <h4 style="margin: 0; color: #f1f5f9;">Advanced ARIMA Analytics</h4>
-            <p style="margin: 8px 0 0 0; color: #cbd5e1; font-size: 13px;">Time-series forecasting with 95% confidence bands and uncertainty quantification</p>
+            <h4 style="margin: 0; color: #3C2A23;">Advanced ARIMA Analytics</h4>
+            <p style="margin: 8px 0 0 0; color: #5C4A42; font-size: 13px;">Time-series forecasting with 95% confidence bands and uncertainty quantification</p>
         </div>
         """
         st.markdown(forecast_header, unsafe_allow_html=True)
@@ -313,8 +313,8 @@ if st.session_state.working_df is not None:
     elif "🗂️" in feature_choice:
         pivot_header = """
         <div class="custom-card" style="margin-bottom: 16px;">
-            <h4 style="margin: 0; color: #f1f5f9;">Pivot Table Analyzer</h4>
-            <p style="margin: 8px 0 0 0; color: #cbd5e1; font-size: 13px;">Aggregate and summarize data with custom pivot operations</p>
+            <h4 style="margin: 0; color: #3C2A23;">Pivot Table Analyzer</h4>
+            <p style="margin: 8px 0 0 0; color: #5C4A42; font-size: 13px;">Aggregate and summarize data with custom pivot operations</p>
         </div>
         """
         st.markdown(pivot_header, unsafe_allow_html=True)
@@ -334,8 +334,8 @@ if st.session_state.working_df is not None:
     elif "🤝" in feature_choice:
         merge_header = """
         <div class="custom-card" style="margin-bottom: 16px;">
-            <h4 style="margin: 0; color: #f1f5f9;">Client Consolidation Merger</h4>
-            <p style="margin: 8px 0 0 0; color: #cbd5e1; font-size: 13px;">Combine duplicate entries and flatten hierarchical data</p>
+            <h4 style="margin: 0; color: #3C2A23;">Client Consolidation Merger</h4>
+            <p style="margin: 8px 0 0 0; color: #5C4A42; font-size: 13px;">Combine duplicate entries and flatten hierarchical data</p>
         </div>
         """
         st.markdown(merge_header, unsafe_allow_html=True)
@@ -357,8 +357,8 @@ if st.session_state.working_df is not None:
     elif "🧠" in feature_choice:
         ml_header = """
         <div class="custom-card" style="margin-bottom: 16px;">
-            <h4 style="margin: 0; color: #f1f5f9;">Automated Machine Learning Studio</h4>
-            <p style="margin: 8px 0 0 0; color: #cbd5e1; font-size: 13px;">Train predictive models and run interactive what-if simulations</p>
+            <h4 style="margin: 0; color: #3C2A23;">Automated Machine Learning Studio</h4>
+            <p style="margin: 8px 0 0 0; color: #5C4A42; font-size: 13px;">Train predictive models and run interactive what-if simulations</p>
         </div>
         """
         st.markdown(ml_header, unsafe_allow_html=True)
@@ -384,13 +384,13 @@ if st.session_state.working_df is not None:
             
             results_header = f"""
             <div style="
-                background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
-                border-left: 4px solid #10b981;
+                background: linear-gradient(135deg, rgba(139, 115, 85, 0.1) 0%, rgba(184, 149, 106, 0.1) 100%);
+                border-left: 4px solid #8B7355;
                 border-radius: 8px;
                 padding: 16px;
                 margin-bottom: 20px;
             ">
-                <h2 style="margin: 0; color: #f1f5f9;">🎉 Pipeline Execution Results: {res['task_type']} Engine</h2>
+                <h2 style="margin: 0; color: #3C2A23;">🎉 Pipeline Execution Results: {res['task_type']} Engine</h2>
             </div>
             """
             st.markdown(results_header, unsafe_allow_html=True)
@@ -426,7 +426,7 @@ if st.session_state.working_df is not None:
             with ch1: 
                 feature_header = """
                 <div class="custom-card" style="margin-bottom: 12px;">
-                    <h4 style="margin: 0; color: #f1f5f9;">📊 Feature Importance Ranking</h4>
+                    <h4 style="margin: 0; color: #3C2A23;">📊 Feature Importance Ranking</h4>
                 </div>
                 """
                 st.markdown(feature_header, unsafe_allow_html=True)
@@ -434,7 +434,7 @@ if st.session_state.working_df is not None:
             with ch2: 
                 preview_header = """
                 <div class="custom-card" style="margin-bottom: 12px;">
-                    <h4 style="margin: 0; color: #f1f5f9;">🎯 Prediction Sample Preview</h4>
+                    <h4 style="margin: 0; color: #3C2A23;">🎯 Prediction Sample Preview</h4>
                 </div>
                 """
                 st.markdown(preview_header, unsafe_allow_html=True)
@@ -450,14 +450,14 @@ else:
         align-items: center;
         justify-content: center;
         height: 60vh;
-        background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(236, 72, 153, 0.05) 100%);
-        border: 2px dashed rgba(99, 102, 241, 0.3);
+        background: linear-gradient(135deg, rgba(184, 149, 106, 0.05) 0%, rgba(159, 127, 92, 0.05) 100%);
+        border: 2px dashed rgba(184, 149, 106, 0.3);
         border-radius: 12px;
         text-align: center;
     ">
         <div style="font-size: 64px; margin-bottom: 20px;">📤</div>
-        <h2 style="margin: 0 0 12px 0; color: #f1f5f9; font-size: 24px;">Ready to Clean Your Data</h2>
-        <p style="margin: 0; color: #cbd5e1; font-size: 14px; max-width: 400px; line-height: 1.6;">
+        <h2 style="margin: 0 0 12px 0; color: #3C2A23; font-size: 24px;">Ready to Clean Your Data</h2>
+        <p style="margin: 0; color: #5C4A42; font-size: 14px; max-width: 400px; line-height: 1.6;">
             Upload a CSV file in the sidebar to begin. The system will automatically analyze your dataset and prepare it for processing.
         </p>
     </div>
