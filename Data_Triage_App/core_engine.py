@@ -66,6 +66,20 @@ class DataTriageEngine:
         return max(0, min(100, final_score))
 
     @staticmethod
+    def generate_demo_dataset() -> pd.DataFrame:
+        """Returns a built-in sample data frame for demo and onboarding use."""
+        sample_data = {
+            "Order ID": [1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008],
+            "Region": ["North", "South", "East", "West", "North", "East", "South", "West"],
+            "Sales": [450.0, 520.0, np.nan, 470.0, 610.0, 580.0, 495.0, np.nan],
+            "Category": ["Office", "Furniture", "Office", "Furniture", "Technology", "Technology", "Office", "Furniture"],
+            "Order Date": ["2026-01-15", "2026-02-03", "2026-02-20", "2026-03-07", "2026-03-18", "2026-04-01", "2026-04-12", "2026-04-20"],
+            "Customer Name": ["Alpha Co", "Beta Ltd", "Gamma LLC", "Delta Inc", "Epsilon GmbH", "Zeta Co", "Eta Ltd", "Theta LLC"],
+            "Status": ["Delivered", "Pending", "Delivered", "Canceled", "Delivered", "Pending", "Delivered", "Delivered"]
+        }
+        return pd.DataFrame(sample_data)
+
+    @staticmethod
     def auto_impute(df: pd.DataFrame) -> pd.DataFrame:
         df_cleaned = df.copy()
         for col in df_cleaned.columns:

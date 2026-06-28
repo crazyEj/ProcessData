@@ -36,13 +36,20 @@ def log_action(action: str): st.session_state.audit_trail.append(action)
 # --- CONTROL SIDEBAR ---
 st.sidebar.header("📁 Control Center")
 
-# Sidebar upload section with enhanced styling
+# Sidebar sample dataset loader and upload section
 sidebar_upload_html = """
 <div class="custom-card" style="margin-bottom: 16px;">
     <p style="margin: 0 0 8px 0; color: #5C4A42; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">📤 Import Dataset</p>
 </div>
 """
 st.sidebar.markdown(sidebar_upload_html, unsafe_allow_html=True)
+
+if st.sidebar.button("📌 Load Sample Dataset", use_container_width=True, help="Load built-in sample data to try the app immediately"):
+    sample_df = DataTriageEngine.generate_demo_dataset()
+    st.session_state.working_df = sample_df
+    st.session_state.feature_status = DataTriageEngine.evaluate_available_features(sample_df)
+    log_action(f"Loaded built-in sample dataset with {len(sample_df)} rows.")
+    st.rerun()
 
 uploaded_file = st.sidebar.file_uploader("Upload Raw/Damaged Dataset", type=["csv"])
 
@@ -120,6 +127,37 @@ if st.session_state.working_df is not None:
 if st.session_state.working_df is not None:
     current_df = st.session_state.working_df
     feature_choice = st.session_state.current_feature
+    health_score = DataTriageEngine.calculate_health_score(current_df)
+    total_cells = current_df.size
+    total_missing = int(current_df.isnull().sum().sum())
+    missing_percent = round((total_missing / total_cells) * 100, 1) if total_cells > 0 else 0
+    duplicate_rows = int(current_df.duplicated().sum())
+
+    st.markdown("""
+    <div class="custom-card" style="margin-bottom: 18px; background: rgba(15, 23, 42, 0.88); border: 1px solid rgba(148, 163, 184, 0.22);">
+        <div style="display: flex; gap: 18px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+            <div>
+                <h3 style="margin: 0; color: #E2E8F0;">📌 Dataset Health Overview</h3>
+                <p style="margin: 6px 0 0 0; color: #94A3B8;">Quick insights for the uploaded dataset, including cleanliness, missing values, and duplication risk.</p>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <span style="color: #F8FAFC; font-size: 14px; background: rgba(251, 191, 36, 0.14); padding: 8px 14px; border-radius: 999px;">Health Score: <strong>{health_score}%</strong></span>
+                <span style="color: #F8FAFC; font-size: 14px; background: rgba(59, 130, 246, 0.14); padding: 8px 14px; border-radius: 999px;">Missing: <strong>{missing_percent}%</strong></span>
+                <span style="color: #F8FAFC; font-size: 14px; background: rgba(34, 197, 94, 0.14); padding: 8px 14px; border-radius: 999px;">Duplicates: <strong>{duplicate_rows}</strong></span>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    c1, c2, c3, c4 = st.columns(4)
+    with c1:
+        UIComponents.render_stat_card("Rows", f"{len(current_df)}", "📈", "primary")
+    with c2:
+        UIComponents.render_stat_card("Columns", f"{len(current_df.columns)}", "📋", "secondary")
+    with c3:
+        UIComponents.render_stat_card("Missing Cells", f"{total_missing}", "⚠️", "warning")
+    with c4:
+        UIComponents.render_stat_card("Health Score", f"{health_score}%", "💪", "success")
 
     col1, col2 = st.columns([3, 1])
     with col1:
