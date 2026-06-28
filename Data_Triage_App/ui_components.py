@@ -17,72 +17,76 @@ class UIComponents:
         :root {
             --primary: #B8956A;
             --primary-dark: #9F7F5C;
-            --secondary: #7E6D5C;
-            --success: #8B7355;
-            --warning: #A68A74;
-            --danger: #6D5C50;
-            --light-bg: #F5F0EB;
-            --card-bg: #E8D5C4;
-            --border: #B8956A;
-            --text-dark: #3C2A23;
-            --text-dim: #5C4A42;
+            --secondary: #94A3B8;
+            --success: #22C55E;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --bg: #0F172A;
+            --bg-alt: #111827;
+            --card-bg: #1E293B;
+            --border: rgba(148, 163, 184, 0.3);
+            --text: #E2E8F0;
+            --text-muted: #94A3B8;
+            --accent: #FBBF24;
         }
 
-        /* Main Container */
-        .main {
-            background: linear-gradient(135deg, #F5F0EB 0%, #E8D5C4 100%);
+        html, body, .block-container, .main {
+            background: radial-gradient(circle at top left, rgba(59, 130, 246, 0.12), transparent 20%),
+                        linear-gradient(180deg, var(--bg) 0%, var(--bg-alt) 100%);
+            color: var(--text);
+        }
+
+        .css-1d391kg {
+            background-color: transparent !important;
         }
 
         /* Custom Card Styling */
         .custom-card {
-            background: linear-gradient(135deg, #FFFFFF 0%, #F5F0EB 100%);
-            border: 1px solid rgba(184, 149, 106, 0.4);
-            border-radius: 12px;
+            background: linear-gradient(180deg, #16213A 0%, #0F172A 100%);
+            border: 1px solid var(--border);
+            border-radius: 16px;
             padding: 20px;
-            margin: 10px 0;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 15px rgba(184, 149, 106, 0.15);
+            margin: 12px 0;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
         }
 
         .custom-card:hover {
-            border-color: rgba(184, 149, 106, 0.8);
-            box-shadow: 0 8px 25px rgba(184, 149, 106, 0.25);
-            transform: translateY(-4px);
-            background: linear-gradient(135deg, #F5F0EB 0%, #E8D5C4 100%);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+            transform: translateY(-3px);
         }
 
         /* Metric Card Styling */
         .metric-card {
-            background: linear-gradient(135deg, #FFFFFF 0%, #F5F0EB 100%);
-            border-left: 4px solid #B8956A;
-            border-radius: 8px;
-            padding: 16px;
-            margin: 8px 0;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(184, 149, 106, 0.1);
+            background: #111827;
+            border-left: 4px solid var(--primary);
+            border-radius: 16px;
+            padding: 18px;
+            margin: 10px 0;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
         }
 
         .metric-card:hover {
-            border-left-color: #8B7355;
-            box-shadow: 0 4px 12px rgba(184, 149, 106, 0.2);
+            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.26);
             transform: translateX(4px);
         }
 
         /* Button Styling */
         .stButton > button {
-            background: linear-gradient(135deg, #B8956A 0%, #9F7F5C 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, #9B7A57 100%);
             border: none;
-            border-radius: 8px;
-            color: #FFFFFF;
-            font-weight: 600;
-            padding: 10px 20px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(184, 149, 106, 0.3);
+            border-radius: 14px;
+            color: #F8FAFC;
+            font-weight: 700;
+            padding: 11px 20px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2);
         }
 
         .stButton > button:hover {
-            background: linear-gradient(135deg, #9F7F5C 0%, #8B7355 100%);
-            box-shadow: 0 6px 20px rgba(184, 149, 106, 0.5);
+            background: linear-gradient(135deg, #A57D4B 0%, #8A6B46 100%);
+            box-shadow: 0 14px 30px rgba(59, 130, 246, 0.28);
             transform: translateY(-2px);
         }
 
@@ -92,86 +96,110 @@ class UIComponents:
 
         /* Input Styling */
         .stTextInput > div > div > input,
-        .stSlider > div > div > div,
-        .stSelectbox > div > div > select {
-            background-color: #FFFFFF !important;
-            border: 1px solid rgba(184, 149, 106, 0.4) !important;
-            border-radius: 8px !important;
-            color: #3C2A23 !important;
-            transition: all 0.3s ease !important;
+        .stNumberInput > div > div > input,
+        .stTextArea > div > div > textarea,
+        .stSelectbox > div > div > select,
+        .stDateInput > div > div > input {
+            background-color: #0F172A !important;
+            border: 1px solid rgba(148, 163, 184, 0.25) !important;
+            border-radius: 12px !important;
+            color: var(--text) !important;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
             padding: 10px !important;
         }
 
         .stTextInput > div > div > input:focus,
-        .stSelectbox > div > div > select:focus {
-            border-color: #B8956A !important;
-            box-shadow: 0 0 0 3px rgba(184, 149, 106, 0.15) !important;
+        .stSelectbox > div > div > select:focus,
+        .stNumberInput > div > div > input:focus,
+        .stTextArea > div > div > textarea:focus {
+            border-color: rgba(251, 191, 36, 0.55) !important;
+            box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.15) !important;
         }
 
         /* Alert Styling */
         .stAlert {
-            border-radius: 8px;
-            border: 1px solid;
-            backdrop-filter: blur(10px);
+            border-radius: 14px;
+            border: 1px solid rgba(148, 163, 184, 0.24);
+            background: rgba(15, 23, 42, 0.92) !important;
+            color: var(--text) !important;
         }
 
         .stInfo {
-            background-color: rgba(184, 149, 106, 0.1) !important;
-            border-color: rgba(184, 149, 106, 0.3) !important;
-            color: #3C2A23 !important;
+            background-color: rgba(56, 189, 248, 0.08) !important;
+            border-color: rgba(56, 189, 248, 0.3) !important;
+            color: var(--text) !important;
         }
 
         .stSuccess {
-            background-color: rgba(139, 115, 85, 0.1) !important;
-            border-color: rgba(139, 115, 85, 0.3) !important;
-            color: #3C2A23 !important;
+            background-color: rgba(34, 197, 94, 0.12) !important;
+            border-color: rgba(34, 197, 94, 0.3) !important;
+            color: var(--text) !important;
         }
 
         .stWarning {
-            background-color: rgba(166, 138, 116, 0.1) !important;
-            border-color: rgba(166, 138, 116, 0.3) !important;
-            color: #3C2A23 !important;
+            background-color: rgba(245, 158, 11, 0.12) !important;
+            border-color: rgba(245, 158, 11, 0.3) !important;
+            color: var(--text) !important;
         }
 
         .stError {
-            background-color: rgba(109, 92, 80, 0.1) !important;
-            border-color: rgba(109, 92, 80, 0.3) !important;
-            color: #3C2A23 !important;
+            background-color: rgba(239, 68, 68, 0.12) !important;
+            border-color: rgba(239, 68, 68, 0.3) !important;
+            color: var(--text) !important;
         }
 
         /* Sidebar Styling */
         [data-testid="stSidebar"] {
-            background: linear-gradient(180deg, #F5F0EB 0%, #E8D5C4 100%);
-            border-right: 1px solid rgba(184, 149, 106, 0.3);
+            background: linear-gradient(180deg, #111827 0%, #0F172A 100%);
+            border-right: 1px solid rgba(148, 163, 184, 0.18);
+            color: var(--text);
+        }
+
+        [data-testid="stSidebar"] .css-1d391kg {
+            background: transparent !important;
         }
 
         [data-testid="stSidebar"] [data-testid="stVerticalBlock"] > [style*="flex-direction"] > button {
-            margin: 5px 0;
+            margin: 6px 0;
+        }
+
+        [data-testid="stSidebar"] .stMarkdown, [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2,
+        [data-testid="stSidebar"] h3, [data-testid="stSidebar"] h4 {
+            color: var(--text) !important;
         }
 
         /* Dataframe Styling */
         .stDataFrame {
-            border-radius: 8px;
+            border-radius: 16px;
             overflow: hidden;
+            background: #0F172A !important;
         }
 
         /* Header Styling */
         h1, h2, h3, h4, h5, h6 {
-            color: #3C2A23;
-            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+            color: var(--text);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
         }
 
         /* Markdown Styling */
         .stMarkdown {
             font-size: 14px;
-            line-height: 1.6;
-            color: #3C2A23;
+            line-height: 1.7;
+            color: var(--text);
+        }
+
+        .stMarkdown p, .stMarkdown span, .stMarkdown div {
+            color: var(--text) !important;
+        }
+
+        .stMarkdown a {
+            color: var(--primary) !important;
         }
 
         /* Divider */
         hr {
-            border-color: rgba(184, 149, 106, 0.3);
-            margin: 20px 0;
+            border-color: rgba(148, 163, 184, 0.18);
+            margin: 24px 0;
         }
 
         /* Animation Classes */
